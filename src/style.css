@@ -1,0 +1,13 @@
+@media screen and (min-width: 300px) {
+  html {
+    margin: 0px auto;
+    padding: 0px; 
+    width: 90vw;
+  }
+}
+
+html {
+  margin: 0px auto;
+  padding: 0px; 
+  width: 90vw;
+}

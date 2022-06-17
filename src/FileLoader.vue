@@ -5,7 +5,10 @@
       <p>ファイルをドラッグ＆ドロップもしくは</p>
       <input type="file" id="file-input">
     </div>
-    <router-link to="/result">解析する</router-link>
+    <br>
+    <!-- <div class="btn btn-analyze"> -->
+      <router-link to="/result" class="btn btn-analyze" ><span>解析</span></router-link>
+    <!-- </div> -->
     <h2>アップロードした視聴履歴のプレビュー</h2>
     <div id="preview">
       <table>
@@ -46,7 +49,7 @@ onMounted(() => {
   dropZone.addEventListener('drop', function(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.style.background = '#ffffff'; //背景色を白に戻す
+    this.style.background = '#ffffff'; 
     var files = e.dataTransfer.files; //ドロップしたファイルを取得
     if (files.length > 1) return alert('アップロードできるファイルは1つだけです。');
     fileInput.files = files; //inputのvalueをドラッグしたファイルに置き換える。
@@ -56,7 +59,9 @@ onMounted(() => {
 
 const previewFile = (file: File) => {
   if(file.type.match("text/csv")){
-    console.log("hoge")
+    movieList.splice(0);
+  }else {
+    alert('csvファイルを選択してください。');
   }
   var fr = new FileReader();
   fr.readAsText(file);
@@ -78,17 +83,25 @@ const previewFile = (file: File) => {
 </script>
 
 <style>
+#drop-zone {
+  border: 1px solid red; 
+  margin: 0 auto;
+  padding: 30px;
+  width: 80vw;
+}
+
 #preview {
-  width: 20vw;                
+  width: 80vw;
+  margin: 0 auto;
   height: 300px;               
-  border: 1px solid #000;      
+  border: 1px solid red;      
   overflow-y: scroll;          
 }
 
-#drop-zone {
-  border: 1px solid; 
-  padding: 30px;
-  width: 20vw;
+#file-input {
+  border: 6px outset red;
+  background-color: white;
+  color: #000000;
+  width: 80vw;
 }
-
 </style>

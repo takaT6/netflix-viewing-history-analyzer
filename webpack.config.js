@@ -44,10 +44,12 @@ module.exports = {
       },
     ]
   },
+  
   resolve: {
     //import文で、.tsを省略できるようにする
     extensions: [".ts", ".js"]
   },
+  
 　//vue-loader v15以上を使う場合に必要
   plugins:[
     new VueLoaderPlugin(),

@@ -27,6 +27,16 @@ import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 var movieList = reactive([]);
+
+var props = withDefaults(
+  defineProps<{
+    movieList:any[] 
+  }>(),
+  {
+    movieList:movieList
+  }
+);
+
 onMounted(() => {
   const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -84,6 +94,7 @@ const previewFile = (file: File) => {
 
 const router = useRouter();
 const btnAnalyzerTap = () =>{
+  props.movieList=movieList
   router.push({path:`/result`});
 }
 </script>

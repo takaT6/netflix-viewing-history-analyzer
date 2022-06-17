@@ -5,7 +5,7 @@ import Result from './Result.vue'
 const routes = [
   { path: '/', name: 'home', component: FileLoader },
   { path: '/upload', name: 'upload', component: FileLoader },
-  { path: '/result', name: 'result', component: Result },
+  { path: '/result/:movielist?', name: 'result', component: Result },
 ]
 
 const router = createRouter({

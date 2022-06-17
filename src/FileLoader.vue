@@ -6,9 +6,10 @@
       <input type="file" id="file-input">
     </div>
     <br>
-    <!-- <div class="btn btn-analyze"> -->
-      <router-link to="/result" class="btn btn-analyze" ><span>解析</span></router-link>
-    <!-- </div> -->
+    <!-- <router-link to="/result" class="btn btn-analyze" ><span>解析</span></router-link> -->
+    <div class="btn btn-analyze" @click="btnAnalyzerTap">
+      <span>解析</span>
+    </div>
     <h2>アップロードした視聴履歴のプレビュー</h2>
     <div id="preview">
       <table>
@@ -23,9 +24,9 @@
 
 <script setup lang="ts">
 import { onMounted, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 
 var movieList = reactive([]);
-
 onMounted(() => {
   const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
@@ -80,6 +81,11 @@ const previewFile = (file: File) => {
     console.log(movieList);
   }
 }
+
+const router = useRouter();
+const btnAnalyzerTap = () =>{
+  router.push({path:`/result`});
+}
 </script>
 
 <style>
@@ -103,5 +109,60 @@ const previewFile = (file: File) => {
   background-color: white;
   color: #000000;
   width: 80vw;
+}
+
+.btn {
+  font-weight: 700;
+  font-size: 120%;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+
+.btn-analyze {
+  width: 30vw;
+  overflow: hidden;
+  /* padding: 1.5rem 6rem; */
+  color: #fff;
+  border-radius: 5;
+  background: #000;
+}
+
+.btn-analyze span {
+  position: relative;
+
+}
+
+.btn-analyze:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: '';
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: translateX(-96%);
+  transform: translateX(-96%);
+  background: #eb0d27;
+}
+
+.btn-analyze:hover:before {
+  -webkit-transform: translateX(0%);
+  transform: translateX(0%);
 }
 </style>

@@ -6,7 +6,6 @@
       <input type="file" id="file-input">
     </div>
     <br>
-    <!-- <router-link to="/result" class="btn btn-analyze" ><span>解析</span></router-link> -->
     <div class="btn btn-analyze" @click="btnAnalyzerTap">
       <span>解析</span>
     </div>
@@ -26,16 +25,11 @@
 import { onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
-var movieList = reactive([]);
+const router = useRouter();
 
-var props = withDefaults(
-  defineProps<{
-    movieList:any[] 
-  }>(),
-  {
-    movieList:movieList
-  }
-);
+var movieList = reactive(new Array());
+
+const emit = defineEmits(['update:movieList']);
 
 onMounted(() => {
   const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
@@ -69,11 +63,9 @@ onMounted(() => {
 });
 
 const previewFile = (file: File) => {
-  if(file.type.match("text/csv")){
-    movieList.splice(0);
-  }else {
-    alert('csvファイルを選択してください。');
-  }
+  if(file.type.match("text/csv")){movieList.splice(0);}
+  else {alert('csvファイルを選択してください。');}
+
   var fr = new FileReader();
   fr.readAsText(file);
   fr.onload = () => {
@@ -83,20 +75,17 @@ const previewFile = (file: File) => {
       let info = lines[i].split(",");
       let viewingInf = {title:info[0], date: info[1]};
       movieList.push(viewingInf);
-      if(i==30){
-        console.log(movieList);
-        return
-      }
     }
-    console.log(movieList);
+    console.log(typeof(movieList));
   }
+  emit('update:movieList', movieList);
 }
 
-const router = useRouter();
 const btnAnalyzerTap = () =>{
-  props.movieList=movieList
-  router.push({path:`/result`});
+  emit('update:movieList', movieList);
+  router.push({hash:"#result"})
 }
+
 </script>
 
 <style>

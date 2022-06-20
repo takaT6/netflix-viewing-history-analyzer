@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import FileLoader from './FileLoader.vue' 
+import Loader from './Loader.vue' 
 import Result from './Result.vue'
 import { computed } from '@vue/reactivity';
 import { useRoute, useRouter } from 'vue-router';
@@ -36,7 +36,7 @@ onMounted(() => {
 const subPage = computed(()=>{
   switch(route.hash){
     case '#upload':
-      return FileLoader
+      return Loader
     case '#result':
       return Result
   }

@@ -13,6 +13,7 @@ const route = useRoute();
 const props = defineProps({
   movieList: Array
 });
-console.log(props.movieList)
+
+console.log(props.movieList);
 
 </script>

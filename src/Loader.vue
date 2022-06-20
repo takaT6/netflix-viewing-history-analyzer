@@ -11,11 +11,17 @@
     </div>
     <h2>アップロードした視聴履歴のプレビュー</h2>
     <div id="preview">
-      <table>
-        <tr v-for="(movie, index) in movieList" :key="index">
-          <td class="preview-title">{{movie.title}}</td>
-          <td class="preview-date">{{movie.date}}</td>
-        </tr>
+      <table id="preview-tbl">
+          <tr>
+            <th class="preview-title">タイトル</th>
+            <th class="preview-date">視聴日時</th>
+          </tr>
+          <transition-group name="tableani">
+          <tr v-for="(movie, index) in movieList" :key="index">
+            <td class="preview-title">{{movie.title}}</td>
+            <td class="preview-date">{{movie.date}}</td>
+          </tr>
+          </transition-group>
       </table>
     </div>
  </div>
@@ -65,26 +71,27 @@ onMounted(() => {
 const previewFile = (file: File) => {
   if(file.type.match("text/csv")){movieList.splice(0);}
   else {alert('csvファイルを選択してください。');}
-
   var fr = new FileReader();
   fr.readAsText(file);
   fr.onload = () => {
-    let lines = (fr.result as string).replace(/\"/g,"").split("\n");
+    let lines = (fr.result as string).replace(/\"/g, "").split("\n");
+    console.log(lines)
     lines.shift();
     for(let i = 0; i < lines.length; i++){
       let info = lines[i].split(",");
+      console.log(info)
       let viewingInf = {title:info[0], date: info[1]};
       movieList.push(viewingInf);
     }
-    console.log(typeof(movieList));
+    console.log(movieList);
   }
   emit('update:movieList', movieList);
-}
+};
 
 const btnAnalyzerTap = () =>{
   emit('update:movieList', movieList);
   router.push({hash:"#result"})
-}
+};
 
 </script>
 
@@ -94,15 +101,42 @@ const btnAnalyzerTap = () =>{
   margin: 0 auto;
   padding: 30px;
   width: 80vw;
+  max-height: 300px;
 }
 
 #preview {
   width: 80vw;
   margin: 0 auto;
-  height: 300px;               
-  border: 1px solid red;      
-  overflow-y: scroll;          
+  max-height: 30vh;
+  min-height: 100px;           
+  border: 1px solid red;
+  overflow: hidden;   
+  overflow-y: scroll; 
 }
+
+#preview-tbl {
+  display: block;
+  position: relative;
+  table-layout: fixed;
+  font-size: 1em;
+}
+#preview-tbl th {
+  background-color: blanchedalmond;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 10px;
+}
+#preview-tbl tr{
+  height: 10px;
+}
+/* .preview-title {
+  max-width: 75%;
+}
+.preview-date {
+  max-width: 25%;
+} */
 
 #file-input {
   border: 6px outset red;
@@ -144,7 +178,6 @@ const btnAnalyzerTap = () =>{
 
 .btn-analyze span {
   position: relative;
-
 }
 
 .btn-analyze:before {

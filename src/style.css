@@ -6,21 +6,54 @@
   }
 } */
 
-html {
-  height: 100%;
+#app-title-en {
+  color: white;
+}
+
+body {
+  background-color: white;
+  color: black;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
 }
 
 #header {
   background-color: black;
 }
 
-#app-title-en {
+#app {
+  flex: 1;
+  overflow-y: scroll;
+  padding-bottom: 10px;
+}
+
+#footer {
+  background-color: black;
   color: white;
 }
 
-body {
-  margin: 0 auto;
-  background-color: white;
-  color: black;
-  text-align: center;
+table tr:nth-child(even) td{
+  background-color:#f0f0f0;
+}
+
+/* .tableani-item {
+  display: inline-block;
+} */
+
+.tableani-enter-active,
+.tableani-leave-active {
+  transition: all 1s ease;
+}
+.tableani-enter-from,
+.tableani-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }

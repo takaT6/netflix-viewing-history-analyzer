@@ -1,12 +1,4 @@
 <template>
-  <!-- <div id="preview">
-    <table>
-      <tr v-for="(movie, index) in movieList" :key="index">
-        <td class="preview-title">{{movie.title}}</td>
-        <td class="preview-date">{{movie.date}}</td>
-      </tr>
-    </table>
-  </div> -->
   <div>
     <transition mode="out-in">
       <component
@@ -29,10 +21,6 @@ const router = useRouter();
 
 var movieList = ref();
 
-onMounted(() => {
-  router.push({hash:"#upload"})
-})
-
 const subPage = computed(()=>{
   switch(route.hash){
     case '#upload':
@@ -40,7 +28,11 @@ const subPage = computed(()=>{
     case '#result':
       return Result
   }
-})
+});
+
+onMounted(() => {
+  router.push({hash:"#upload"})
+});
 
 </script>
 

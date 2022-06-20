@@ -3,8 +3,8 @@ export const CONST = {
   API_KEY: "62951c37529b12bb9c37b0da38784d3c",
   LANG: "ja",
 
-  DISCOVER_M: "discover/movie",
+  DISCOVER_MV: "discover/movie",
   DISCOVER_TV: "discover/movie",
-  SEARCH_M: "search/movie",
+  SEARCH_MV: "search/movie",
   SEARCH_TV: "search/tv"
 }

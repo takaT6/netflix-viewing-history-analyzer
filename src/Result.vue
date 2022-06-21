@@ -1,19 +1,22 @@
 <template>
- <div>
-   結果
+ <div v-for="(movie, index) in props.movieList" :key="index">
+   <div>{{movie['title']}}</div>
+   <div>{{movie['date']}}</div>
  </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted} from "vue";
-import { useRoute } from "vue-router";
+import { onBeforeMount, onMounted, reactive} from 'vue';
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
+const router = useRouter();
 
 const props = defineProps({
   movieList: Array
 });
 
-console.log(props.movieList);
+onMounted(() => {
+  console.log('Result Vue >>>>>> On Mounted.');
+})
 
 </script>

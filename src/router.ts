@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory,  } from 'vue-router'
 import Loader from './Loader.vue' 
 import Result from './Result.vue'
 import Main from './App.vue'

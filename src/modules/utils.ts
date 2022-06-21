@@ -13,14 +13,14 @@ export const discoverMovies = () => {
       language: CONST.LANG,
       with_genres: 878,
       with_cast: 500,
-      sort_by: "vote_average.des"
+      sort_by: 'vote_average.des'
     }
   })
   .then(staus => {
-    console.log("ステータスコード:", staus);
+    console.log('ステータスコード:', staus);
   })
   .catch(err => {
-    console.log("err:", err);
+    console.log('err:', err);
   });
 };
 
@@ -33,10 +33,10 @@ export const searchMovie = (title: string) => {
     }
   })
   .then(response => {
-    console.log("ステータスコード:", response);
+    console.log('ステータスコード:', response);
   })
   .catch(err => {
-    console.log("no hit:", err);
+    console.log('no hit:', err);
   });
 };
 
@@ -49,10 +49,10 @@ export const searchTV = (title: string) => {
     }
   })
   .then(response => {
-    console.log("ステータスコード:", response);
+    console.log('ステータスコード:', response);
   })
   .catch(err => {
-    console.log("no hit:", err);
+    console.log('no hit:', err);
   });
 };
 

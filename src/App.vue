@@ -1,24 +1,22 @@
 <template>
   <div>
-    <transition mode="out-in">
+    <!-- <transition mode="out-in"> -->
       <component
         :is="subPage"
         v-model:movieList="movieList"
       ></component>
-    </transition>
+    <!-- </transition> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import Loader from './Loader.vue' 
 import Result from './Result.vue'
-import { computed } from '@vue/reactivity';
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive, computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
-
 var movieList = ref();
 
 const subPage = computed(()=>{
@@ -31,7 +29,13 @@ const subPage = computed(()=>{
 });
 
 onMounted(() => {
-  router.push({hash:"#upload"})
+  router.push({hash: '#upload'})
+  console.log('App Vue >>>>>> On mounted.');
+
+  window.addEventListener('popstate', function (e) {
+    console.log('Catch postate.')
+    router.push({hash: '#upload'})
+  });
 });
 
 </script>

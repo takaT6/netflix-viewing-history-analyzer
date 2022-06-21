@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue';
+import { onMounted, onUnmounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -37,60 +37,64 @@ var movieList = reactive(new Array());
 
 const emit = defineEmits(['update:movieList']);
 
+if(sessionStorage.movieList != undefined) {
+      movieList = JSON.parse(sessionStorage.movieList)
+      // console.log(sessionStorage.movieList)
+      // console.log(movieList)
+}
+
 onMounted(() => {
   const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
   const fileInput = document.getElementById('file-input') as HTMLInputElement;
-
   dropZone.addEventListener('dragover', function(e) {
     e.stopPropagation();
     e.preventDefault();
     this.style.background = '#e1e7f0';
   }, false);
-
   dropZone.addEventListener('dragleave', function(e) {
     e.stopPropagation();
     e.preventDefault();
     this.style.background = '#ffffff';
   }, false);
-
   fileInput.addEventListener('change', function () {
         previewFile(this.files[0]);
   });
-
   dropZone.addEventListener('drop', function(e) {
     e.stopPropagation();
     e.preventDefault();
     this.style.background = '#ffffff'; 
-    var files = e.dataTransfer.files; //ドロップしたファイルを取得
+    var files = e.dataTransfer.files;
     if (files.length > 1) return alert('アップロードできるファイルは1つだけです。');
-    fileInput.files = files; //inputのvalueをドラッグしたファイルに置き換える。
+    fileInput.files = files;
     previewFile(files[0]);
   }, false);
+  console.log('Loader Vue >>>>>> On mounted.')
+});
+
+onUnmounted(() => {
+  sessionStorage.setItem('movieList', JSON.stringify(movieList));
+  console.log('Loader Vue >>>>>> On Unmounted.');
 });
 
 const previewFile = (file: File) => {
-  if(file.type.match("text/csv")){movieList.splice(0);}
+  if(file.type.match('text/csv')){movieList.splice(0);}
   else {alert('csvファイルを選択してください。');}
   var fr = new FileReader();
   fr.readAsText(file);
   fr.onload = () => {
-    let lines = (fr.result as string).replace(/\"/g, "").split("\n");
-    console.log(lines)
+    let lines = (fr.result as string).replace(/\"/g, '').split('\n');
     lines.shift();
     for(let i = 0; i < lines.length; i++){
-      let info = lines[i].split(",");
-      console.log(info)
+      let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
       movieList.push(viewingInf);
     }
-    console.log(movieList);
   }
-  emit('update:movieList', movieList);
 };
 
 const btnAnalyzerTap = () =>{
   emit('update:movieList', movieList);
-  router.push({hash:"#result"})
+  router.push({hash:'#result'})
 };
 
 </script>

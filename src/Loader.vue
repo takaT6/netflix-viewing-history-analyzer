@@ -87,7 +87,7 @@ const previewFile = (file: File) => {
     for(let i = 0; i < lines.length; i++){
       let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
-      movieList.push(viewingInf);
+      if(info[0] != ""){movieList.push(viewingInf);}
     }
   }
 };

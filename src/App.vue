@@ -3,7 +3,7 @@
     <!-- <transition mode="out-in"> -->
       <component
         :is="subPage"
-        v-model:movieList="movieList"
+        v-model:viewingList="viewingList"
       ></component>
     <!-- </transition> -->
   </div>
@@ -17,7 +17,7 @@ import { onMounted, ref, reactive, computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
-var movieList = ref();
+var viewingList = ref();
 
 const subPage = computed(()=>{
   switch(route.hash){

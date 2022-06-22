@@ -24,8 +24,8 @@ export const discoverMovies = () => {
   });
 };
 
-export const searchMovie = (title: string) => {
-  client.get(CONST.SEARCH_MV, {
+export const searchMovie = async (title: string) => {
+  const res = await client.get(CONST.SEARCH_MV, {
     params: {
       api_key: CONST.API_KEY,
       language: CONST.LANG,
@@ -33,15 +33,23 @@ export const searchMovie = (title: string) => {
     }
   })
   .then(response => {
-    console.log('ステータスコード:', response);
+    // console.log('ステータスコード:', response.data.results[0]);
+    if(response != undefined){
+      return response.data.results;
+    }else{
+      return [];
+    }
   })
   .catch(err => {
     console.log('no hit:', err);
+    return [];
   });
+  return res;
+  
 };
 
-export const searchTV = (title: string) => {
-  client.get(CONST.SEARCH_TV, {
+export const searchTV = async (title: string) => {
+  const res = await client.get(CONST.SEARCH_TV, {
     params: {
       api_key: CONST.API_KEY,
       language: CONST.LANG,
@@ -49,59 +57,90 @@ export const searchTV = (title: string) => {
     }
   })
   .then(response => {
-    console.log('ステータスコード:', response);
+    // console.log('ステータスコード:', response.data.results[0].poster_path);
+    return response.data.results;
   })
   .catch(err => {
     console.log('no hit:', err);
+    return [];
   });
+  return res;
 };
 
-export const sortList = (movieList: any[]) => {
-  var editedML = new Array();
-  for(var i = 0; i < movieList.length; i++){
-    var splitTile =movieList[i].title.split(':');
-    console.log(typeof(movieList[i].date))
-    if(movieList[i].date !== undefined){
-      var numDate = movieList[i].date.replace(/\//g, '');
+export const sortList = (viewingList: any[]) => {
+  // タイトルとサブタイトルを分ける
+  var editedVL = new Array();
+  for(var i = 0; i < viewingList.length; i++){
+    var splitTile =viewingList[i].title.split(':');
+    console.log(typeof(viewingList[i].date))
+    if(viewingList[i].date !== undefined){
+      var numDate = viewingList[i].date.replace(/\//g, '');
     }
-    editedML.push({
+    editedVL.push({
       title: splitTile[0], 
       date: numDate,
       subtitle: splitTile.slice(1).join(':')
-    })
+    });
   }
-  console.log(editedML)
+  console.log(editedVL)
 
-  var sortedML = new Array();
-  for(var i = 0; i < editedML.length; i++){
-    if(!(sortedML.some((movie) => movie.title == editedML[i].title))){
-      sortedML.push({
-        title: editedML[i].title,
+  // タイトルごとにまとめる
+  var sortedVL = new Array();
+  for(var i = 0; i < editedVL.length; i++){
+    const targetView = editedVL[i];
+    if(!(sortedVL.some((movie) => movie.title == targetView.title))){
+      sortedVL.push({
+        title: targetView.title,
         info: [{
-          subtitle:editedML[i].subtitle,
-          date: editedML[i].date
+          subtitle: targetView.subtitle,
+          date: targetView.date
         }],
         cnt: 1,
         poster: '',
         release_date: '',
         first_air_date: '',
-        
-
+        some_hits: Boolean,
+        type: 'movie'
       });
     }else{
-      const index = sortedML.findIndex((movie) => movie.title == editedML[i].title );
-      console.log(index)
-      if(index !=-1 && sortedML[index].subtitle != ""){
-        sortedML[index].info.push({
-          subtitle:editedML[i].subtitle,
-          date: editedML[i].date
+      const index = sortedVL.findIndex((movie) => movie.title == targetView.title );
+      var target = sortedVL[index]
+      if(index !=-1 && target.subtitle != ""){
+        target.info.push({
+          subtitle: targetView.subtitle,
+          date: targetView.date
         });
-        sortedML[index].cnt += 1;
+        target.cnt += 1;
+        target.type = 'tv';
+      }else{
+        console.log('no hit.')
       }
     }
   }
-
-  console.log(sortedML)
-
-  return sortedML
+  console.log(sortedVL)
+  return sortedVL
 };
+
+
+export const getPoster = async (viewingList: any[]) => {
+  const newVL = viewingList;
+  for(var i = 0; i < newVL.length; i++){
+    const viewingItem = newVL[i];
+    if(viewingItem.type == 'movie'){
+      const res = await searchMovie(viewingItem.title);
+      console.log(res.length)
+      if(res.length > 0 ){
+        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path
+        console.log(viewingItem.poster)
+      }
+    }else if(viewingItem.type == 'tv'){
+      const res = await searchTV(viewingItem.title)
+      if(res.length > 0 ){
+        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path
+      }
+    }
+  }
+  console.log('finished getPoster func.')
+  console.log(newVL)
+  return newVL//Promise.resolve(newVL);
+}

@@ -6,5 +6,7 @@ export const CONST = {
   DISCOVER_MV: 'discover/movie',
   DISCOVER_TV: 'discover/movie',
   SEARCH_MV: 'search/movie',
-  SEARCH_TV: 'search/tv'
+  SEARCH_TV: 'search/tv',
+
+  POSTER_URL: 'https://image.tmdb.org/t/p/w500'
 }

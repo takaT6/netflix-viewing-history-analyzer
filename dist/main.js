@@ -185,7 +185,7 @@ const finalizeDepMarkers = (effect) => {
     }
 };
 
-const targetMap = new WeakMap();
+const targetViewap = new WeakMap();
 // The number of effects currently being tracked recursively.
 let effectTrackDepth = 0;
 let trackOpBit = 1;
@@ -304,9 +304,9 @@ function resetTracking() {
 }
 function track(target, type, key) {
     if (shouldTrack && activeEffect) {
-        let depsMap = targetMap.get(target);
+        let depsMap = targetViewap.get(target);
         if (!depsMap) {
-            targetMap.set(target, (depsMap = new Map()));
+            targetViewap.set(target, (depsMap = new Map()));
         }
         let dep = depsMap.get(key);
         if (!dep) {
@@ -339,7 +339,7 @@ function trackEffects(dep, debuggerEventExtraInfo) {
     }
 }
 function trigger(target, type, key, newValue, oldValue, oldTarget) {
-    const depsMap = targetMap.get(target);
+    const depsMap = targetViewap.get(target);
     if (!depsMap) {
         // never been tracked
         return;

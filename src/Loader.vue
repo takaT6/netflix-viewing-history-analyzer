@@ -17,7 +17,7 @@
             <th class="preview-date">視聴日時</th>
           </tr>
           <transition-group name="tableani">
-          <tr v-for="(movie, index) in movieList" :key="index">
+          <tr v-for="(movie, index) in viewingList" :key="index">
             <td class="preview-title">{{movie.title}}</td>
             <td class="preview-date">{{movie.date}}</td>
           </tr>
@@ -33,14 +33,14 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-var movieList = reactive(new Array());
+var viewingList = reactive(new Array());
 
-const emit = defineEmits(['update:movieList']);
+const emit = defineEmits(['update:viewingList']);
 
-if(sessionStorage.movieList != undefined) {
-      movieList = JSON.parse(sessionStorage.movieList)
-      // console.log(sessionStorage.movieList)
-      // console.log(movieList)
+if(sessionStorage.viewingList != undefined) {
+      viewingList = JSON.parse(sessionStorage.viewingList)
+      // console.log(sessionStorage.viewingList)
+      // console.log(viewingList)
 }
 
 onMounted(() => {
@@ -72,12 +72,12 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  sessionStorage.setItem('movieList', JSON.stringify(movieList));
+  sessionStorage.setItem('viewingList', JSON.stringify(viewingList));
   console.log('Loader Vue >>>>>> On Unmounted.');
 });
 
 const previewFile = (file: File) => {
-  if(file.type.match('text/csv')){movieList.splice(0);}
+  if(file.type.match('text/csv')){viewingList.splice(0);}
   else {alert('csvファイルを選択してください。');}
   var fr = new FileReader();
   fr.readAsText(file);
@@ -87,13 +87,13 @@ const previewFile = (file: File) => {
     for(let i = 0; i < lines.length; i++){
       let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
-      if(info[0] != ""){movieList.push(viewingInf);}
+      if(info[0] != ""){viewingList.push(viewingInf);}
     }
   }
 };
 
 const btnAnalyzerTap = () =>{
-  emit('update:movieList', movieList);
+  emit('update:viewingList', viewingList);
   router.push({hash:'#result'})
 };
 

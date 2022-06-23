@@ -44,9 +44,9 @@ table tr:nth-child(even) td{
   background-color:#f0f0f0;
 }
 
-/* .tableani-item {
+.tableani-item {
   display: inline-block;
-} */
+}
 
 .tableani-enter-active,
 .tableani-leave-active {
@@ -55,5 +55,14 @@ table tr:nth-child(even) td{
 .tableani-enter-from,
 .tableani-leave-to {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(100px);
+}
+
+
+.dt02 {
+  animation-delay: 0.2s;
+}
+  
+.dt04{
+  animation-delay: 0.4s;
 }

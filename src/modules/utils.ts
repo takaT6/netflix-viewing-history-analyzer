@@ -96,7 +96,7 @@ export const sortList = (viewingList: any[]) => {
           date: targetView.date
         }],
         cnt: 1,
-        poster: '',
+        poster: './1.png',
         release_date: '',
         first_air_date: '',
         some_hits: Boolean,
@@ -143,4 +143,36 @@ export const getPoster = async (viewingList: any[]) => {
   console.log('finished getPoster func.')
   console.log(newVL)
   return newVL//Promise.resolve(newVL);
+}
+
+
+
+
+/**
+ * ScreenLook
+ */
+ export const screenLock = () =>{
+  var element = document.createElement('div');
+  element.id = "screenLock";
+ 
+  element.style.height = '100%';
+  element.style.left = '0px';
+  element.style.position = 'fixed';
+  element.style.top = '0px';
+  element.style.width = '100%';
+  element.style.zIndex = '9999';
+  element.style.opacity = '0';
+ 
+  var objBody = document.getElementsByTagName("body").item(0);
+  objBody.appendChild(element);
+
+  /**
+   * ScreenUnLook
+   */
+  const screenUnLock = () => {
+    var screenLock = document.getElementById("screenLock");
+    screenLock.parentNode.removeChild(screenLock);
+  }
+  
+  setTimeout(screenUnLock, 3000);
 }

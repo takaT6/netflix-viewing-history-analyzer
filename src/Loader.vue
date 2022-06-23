@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { screenLock } from './modules/utils';
 
 const router = useRouter();
 
@@ -93,6 +94,7 @@ const previewFile = (file: File) => {
 };
 
 const btnAnalyzerTap = () =>{
+  // screenLock()
   emit('update:viewingList', viewingList);
   router.push({hash:'#result'})
 };

@@ -24,8 +24,8 @@ export const discoverMovies = () => {
   });
 };
 
-export const searchMovie = async (title: string) => {
-  const res = await client.get(CONST.SEARCH_MV, {
+export const searchMovie = (title: string) => {
+  const res = client.get(CONST.SEARCH_MV, {
     params: {
       api_key: CONST.API_KEY,
       language: CONST.LANG,
@@ -48,8 +48,8 @@ export const searchMovie = async (title: string) => {
   
 };
 
-export const searchTV = async (title: string) => {
-  const res = await client.get(CONST.SEARCH_TV, {
+export const searchTV = (title: string) => {
+  const res = client.get(CONST.SEARCH_TV, {
     params: {
       api_key: CONST.API_KEY,
       language: CONST.LANG,
@@ -72,7 +72,7 @@ export const sortList = (viewingList: any[]) => {
   var editedVL = new Array();
   for(var i = 0; i < viewingList.length; i++){
     var splitTile =viewingList[i].title.split(':');
-    console.log(typeof(viewingList[i].date))
+    console.log(typeof(viewingList[i].date));
     if(viewingList[i].date !== undefined){
       var numDate = viewingList[i].date.replace(/\//g, '');
     }
@@ -104,7 +104,7 @@ export const sortList = (viewingList: any[]) => {
       });
     }else{
       const index = sortedVL.findIndex((movie) => movie.title == targetView.title );
-      var target = sortedVL[index]
+      var target = sortedVL[index];
       if(index !=-1 && target.subtitle != ""){
         target.info.push({
           subtitle: targetView.subtitle,
@@ -113,36 +113,37 @@ export const sortList = (viewingList: any[]) => {
         target.cnt += 1;
         target.type = 'tv';
       }else{
-        console.log('no hit.')
+        console.log('no hit.');
       }
     }
   }
-  console.log(sortedVL)
-  return sortedVL
+  console.log(sortedVL);
+  return sortedVL;
 };
 
-
-export const getPoster = async (viewingList: any[]) => {
-  const newVL = viewingList;
-  for(var i = 0; i < newVL.length; i++){
-    const viewingItem = newVL[i];
-    if(viewingItem.type == 'movie'){
-      const res = await searchMovie(viewingItem.title);
-      console.log(res.length)
+export const getPoster = async (viewingItem) => {
+  if(viewingItem.type == 'movie'){
+    var res = await searchMovie(viewingItem.title);
+    if(res.length == 0 ){
+      res = await searchTV(viewingItem.title);
       if(res.length > 0 ){
-        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path
-        console.log(viewingItem.poster)
+        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
       }
-    }else if(viewingItem.type == 'tv'){
-      const res = await searchTV(viewingItem.title)
+    }else{
+      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+    }
+  }else if(viewingItem.type == 'tv'){
+    var res = await searchTV(viewingItem.title);
+    if(res.length == 0 ){
+      res = await searchMovie(viewingItem.title);
       if(res.length > 0 ){
-        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path
+        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
       }
+    }else{
+      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
     }
   }
-  console.log('finished getPoster func.')
-  console.log(newVL)
-  return newVL//Promise.resolve(newVL);
+  console.log('finished getPoster func.');
 }
 
 

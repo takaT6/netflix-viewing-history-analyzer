@@ -9,46 +9,39 @@
     <div 
       v-for="(movie, index) in sortedViewingList" 
       :key="index"
-      :class="['card',{'fade-up': isActive}, rowClassNm.class[index]]"
+      :class="['card',{'fade-up': isActive}, rowClassNm[index]]"
       :style="{animationDelay: 0.1*index+'s'}"
-      @mouseover="mouseOver(rowClassNm.class[index])"
-      @mouseleave="mouseLeave"
+      @mouseover="mouseOver(rowClassNm[index])"
+      @mouseleave="mouseLeave(rowClassNm[index])"
     >
       <img class="poster" :src="movie.poster">
-      <!-- <img class="poster" src="https://image.tmdb.org/t/p/w500/9tNtSk46s3f1ePr59p0JG6uacc8.jpg"> -->
       <div>{{movie.title}}</div>
-      <!-- <div>{{movie['date']}}</div> -->
     </div>
   </transition-group>
 </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref} from 'vue';
-import { useRouter } from 'vue-router';
-import { searchMovie, searchTV, sortList, getPoster, screenLock } from './modules/utils';
-import { CONST } from './modules/common'
+import { onMounted, ref} from 'vue';
+import { sortList, getPoster, screenLock } from './modules/utils';
 
-const router = useRouter();
 const props = defineProps({
   viewingList: Array
 });
 
 var isActive = ref(true);
 
-var sortedViewingList = reactive([]);
+var sortedViewingList = ref([]);
 
-var rowClassNm = reactive({
-  class: []
-})
+var rowClassNm = ref([])
 
 var appearCnt = 0;
 
-sortedViewingList = sortList(props.viewingList);
+sortedViewingList.value = sortList(props.viewingList);
 
 const afterEnter = () => {
   appearCnt++;
-  if(appearCnt == sortedViewingList.length){
+  if(appearCnt == sortedViewingList.value.length || appearCnt > 20){
     setTimeout(() => {
       isActive.value = false;
     }, 1000);
@@ -56,19 +49,19 @@ const afterEnter = () => {
 };
 
 const rowClass = () => {
-  const width = window.innerWidth;
-  const divNum = Math.floor(width/100)-1;
-  console.log(divNum)
-  const list = []
-  for(var i = 0; i < width/divNum; i++){
+  const width = window.innerWidth-25;
+  const divNum = Math.floor(width/221.99);
+  const rowNum = Math.floor(sortedViewingList.value.length/divNum) + 1;
+  var list = [];
+  for(var i = 0; i < rowNum; i++){
     for(var j = 0; j < divNum; j++){
       list.push('row'+i)
     }
   }
-  rowClassNm.class = list
+  rowClassNm.value = list;
 }
 
-rowClass()
+rowClass();
 
 const mouseOver = (classNm) => {
   var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
@@ -76,29 +69,39 @@ const mouseOver = (classNm) => {
     classes[i].style.transform = "translateX(-25%)";
   }
 }
-// const doGetPoster = async () => {
-//   var vlWithPoster = await getPoster(sortedViewingList)
-//   return vlWithPoster
-// }
+const mouseLeave = (classNm) => {
+  var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
+  for(var i = 0; i <  classes.length; i++){
+    classes[i].style.transform = "translateX(0%)";
+  }
+}
+
+const doGetPoster = () => {
+   Promise.all(sortedViewingList.value.map(getPoster))
+}
+doGetPoster();
 
 onMounted(() => {
   console.log('Result Vue >>>>>> On Mounted.');
-  window.addEventListener('resize', rowClass)
+  window.addEventListener('resize', rowClass);
 });
 
 </script>
 
-<style>
+<style scoped>
 .cards {
+  background-color: black;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  margin: 20px;
+  padding-left: 25px;
+  padding-top: 20px;
 }
 
 .card {
+  background-color: white;
   height: auto;
-  width: 100px;
+  width: 200px;
   border: 1px solid black;
   border-radius: 0.7rem;
   overflow-wrap: break-word;
@@ -107,22 +110,23 @@ onMounted(() => {
   position: relative;
   display: inline-block;
   transition: transform 500ms;
+  margin: 5px;
 }
 
 
 /* .cards:focus-within .card, */
-.cards:hover .row0 {
+/* .cards:hover .row0 {
   transform: translateX(-25%);
-}
+} */
 
 /* .card:focus ~ .card, */
-.row0:hover ~ .row0 {
-  transform: translateX(25%) !important;
-}
+/* .row0:hover ~ .row0 {
+  transform: translateX(25%) !important ;
+} */
 
 /* .cards .card:focus, */
 .cards .card:hover{
-  transform: scale(1.3);
+  transform: scale(1.5) !important;
   background-color: aqua;
   z-index: 1;
 }

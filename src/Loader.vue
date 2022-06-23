@@ -28,20 +28,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { screenLock } from './modules/utils';
 
 const router = useRouter();
 
-var viewingList = reactive(new Array());
+var viewingList = ref([]);
 
 const emit = defineEmits(['update:viewingList']);
 
 if(sessionStorage.viewingList != undefined) {
-      viewingList = JSON.parse(sessionStorage.viewingList)
-      // console.log(sessionStorage.viewingList)
-      // console.log(viewingList)
+  viewingList.value = JSON.parse(sessionStorage.viewingList);
 }
 
 onMounted(() => {
@@ -73,29 +71,31 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  sessionStorage.setItem('viewingList', JSON.stringify(viewingList));
+  sessionStorage.setItem('viewingList', JSON.stringify(viewingList.value));
   console.log('Loader Vue >>>>>> On Unmounted.');
 });
 
 const previewFile = (file: File) => {
-  if(file.type.match('text/csv')){viewingList.splice(0);}
+  if(file.type.match('text/csv')){viewingList.value.splice(0);}
   else {alert('csvファイルを選択してください。');}
   var fr = new FileReader();
   fr.readAsText(file);
   fr.onload = () => {
     let lines = (fr.result as string).replace(/\"/g, '').split('\n');
     lines.shift();
+    const copyRef = viewingList.value
     for(let i = 0; i < lines.length; i++){
       let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
-      if(info[0] != ""){viewingList.push(viewingInf);}
+      if(info[0] != ""){copyRef.push(viewingInf);}
     }
+
   }
 };
 
 const btnAnalyzerTap = () =>{
   // screenLock()
-  emit('update:viewingList', viewingList);
+  emit('update:viewingList', viewingList.value);
   router.push({hash:'#result'})
 };
 

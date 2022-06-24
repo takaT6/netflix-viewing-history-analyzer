@@ -1,5 +1,5 @@
 <template>
- <div>
+ <div id="field">
    <h1>視聴履歴のアップロード</h1>
     <div id="drop-zone">
       <p>ファイルをドラッグ＆ドロップもしくは</p>
@@ -17,13 +17,14 @@
             <th class="preview-date">視聴日時</th>
           </tr>
           <transition-group name="tableani">
-          <tr v-for="(movie, index) in viewingList" :key="index">
-            <td class="preview-title">{{movie.title}}</td>
-            <td class="preview-date">{{movie.date}}</td>
-          </tr>
+            <tr v-for="(movie, index) in viewingList" :key="index">
+              <td class="preview-title">{{movie.title}}</td>
+              <td class="preview-date">{{movie.date}}</td>
+            </tr>
           </transition-group>
       </table>
     </div>
+    <div id="spacer"></div>
  </div>
 </template>
 
@@ -84,17 +85,17 @@ const previewFile = (file: File) => {
     let lines = (fr.result as string).replace(/\"/g, '').split('\n');
     lines.shift();
     const copyRef = viewingList.value
-    for(let i = 0; i < lines.length; i++){
+    for(let i = 0, len = lines.length; i < len; i++){
       let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
-      if(info[0] != ""){copyRef.push(viewingInf);}
+      if(info[0] != "")copyRef.push(viewingInf);
     }
 
   }
 };
 
 const btnAnalyzerTap = () =>{
-  // screenLock()
+  screenLock()
   emit('update:viewingList', viewingList.value);
   router.push({hash:'#result'})
 };
@@ -102,6 +103,13 @@ const btnAnalyzerTap = () =>{
 </script>
 
 <style>
+#field {
+  background-color: white;
+}
+
+#spacer {
+  height: 50px;
+}
 #drop-zone {
   border: 1px solid red; 
   margin: 0 auto;

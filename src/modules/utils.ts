@@ -24,7 +24,7 @@ export const discoverMovies = () => {
   });
 };
 
-export const searchMovie = (title: string) => {
+export const searchMovie = (title: string): Promise<any> => {
   const res = client.get(CONST.SEARCH_MV, {
     params: {
       api_key: CONST.API_KEY,
@@ -48,7 +48,7 @@ export const searchMovie = (title: string) => {
   
 };
 
-export const searchTV = (title: string) => {
+export const searchTV = (title: string): Promise<any> => {
   const res = client.get(CONST.SEARCH_TV, {
     params: {
       api_key: CONST.API_KEY,
@@ -67,10 +67,10 @@ export const searchTV = (title: string) => {
   return res;
 };
 
-export const sortList = (viewingList: any[]) => {
+export const sortList = (viewingList: any[]): any[] => {
   // タイトルとサブタイトルを分ける
   var editedVL = new Array();
-  for(var i = 0; i < viewingList.length; i++){
+  for(var i = 0, len = viewingList.length; i < len; i++){
     var splitTile =viewingList[i].title.split(':');
     console.log(typeof(viewingList[i].date));
     if(viewingList[i].date !== undefined){
@@ -97,10 +97,11 @@ export const sortList = (viewingList: any[]) => {
         }],
         cnt: 1,
         poster: './1.png',
-        release_date: '',
-        first_air_date: '',
+        release_date: '111',
+        first_air_date: '111',
         some_hits: Boolean,
-        type: 'movie'
+        type: 'movie',
+        show_info:false
       });
     }else{
       const index = sortedVL.findIndex((movie) => movie.title == targetView.title );
@@ -121,7 +122,7 @@ export const sortList = (viewingList: any[]) => {
   return sortedVL;
 };
 
-export const getPoster = async (viewingItem) => {
+export const getPoster = async (viewingItem: { type: string; title: string; poster: string; }): Promise<any> => {
   if(viewingItem.type == 'movie'){
     var res = await searchMovie(viewingItem.title);
     if(res.length == 0 ){

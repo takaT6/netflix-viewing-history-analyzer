@@ -13,7 +13,7 @@
 import Loader from './Loader.vue' 
 import Result from './Result.vue'
 import { useRoute, useRouter } from 'vue-router';
-import { onMounted, ref, reactive, computed } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
 const route = useRoute();
 const router = useRouter();

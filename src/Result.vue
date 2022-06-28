@@ -1,10 +1,5 @@
 <template>
-  <div class="overlay" v-if="show_loading">
-    <i 
-      class="fa-solid fa-circle-notch fa-spin fa-5x" 
-      style="color:white"
-    ></i>
-  </div>
+  <Loading v-if="show_loading"></Loading>
   <div id="field" v-if="show_all">
     <transition-group 
       name="list" 
@@ -17,41 +12,46 @@
         :key="index"
         :class="['card',{'fade-up': isActive}, rowClassNm[index], 'card'+index]"
         :style="{animationDelay: 0.1*index+'s'}"
-        @mouseover="mouseOver(rowClassNm[index]), addInfo(movie)"
-        @mouseleave="mouseLeave(rowClassNm[index]), delInfo(movie)"
-        @click="click(movie, 'card'+index)"
+        @mouseover="addInfo(movie)"
+        @mouseleave="delInfo(movie)"
       >
         <img class="poster" :src="movie.poster">
         <div>{{movie.title}}</div>
-        <div v-if="movie.show_info">
+        <div class="movie-info" v-if="movie.show_info">
           <div v-if="movie.release_date != ''">公開日：{{movie.release_date}}</div>
           <div v-if="movie.first_air_date != ''">初回放送日：{{movie.first_air_date}}</div>
-          <!-- <div v-if="movie.show_info">{{movie.info}}</div> -->
-          <div>
+          <div 
+            @click="clickInfo(movie, 'card'+index, $event)"
+            style="font-size:1.2em;cursor: pointer;"
+          >
             詳細を見る
-            <i class="fa-solid fa-circle-info fa-flip" 
-              style="--fa-animation-duration: 3s;"
+            <i class="fa-solid fa-circle-chevron-down fa-flip" style="--fa-animation-duration: 3s;"
             ></i>
           </div>
         </div>
       </div>
     </transition-group>
   </div>
-  <div class="overlay" v-if="show_modal">
-    <div id="content">
-      <p>これがモーダルウィンドウです。</p>
-      <p><button>close</button></p>
+  <transition name="modal">
+    <div id="modal" class="overlay" v-if="show_modal">
+      <i 
+        class="fa-solid fa-circle-chevron-down fa-2x modal-close-icon" 
+        style="color:white;" 
+        id="btnCloseModal" 
+        @click="btnCloseModalTap">
+      </i>
+      <Modal v-model:movieInfo="data4Modal"></Modal>
     </div>
-</div>
+  </transition>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref} from 'vue';
 import { sortList, getPoster } from './modules/utils';
-
-const props = defineProps({
-  viewingList: Array
-});
+import Modal from './Modal.vue';
+import Loading from './Loading.vue';
+/*===============================================================*/
+const props = defineProps({viewingList: Array});
 
 var isActive = ref(true);
 
@@ -65,27 +65,23 @@ var show_loading = ref(true);
 
 var show_modal = ref(false);
 
+var appearCnt = 0;
+
+var data4Modal = ref([]);
+/*===============================================================*/
+
 sortedViewingList.value = sortList(props.viewingList);
 
-var appearCnt = 0;
-const afterEnter = (): void => {
-  appearCnt++;
-  if(appearCnt == sortedViewingList.value.length || appearCnt > 10){
-      isActive.value = false;
-  }
-  if(appearCnt == sortedViewingList.value.length){
-    show_loading.value = false;
-  }
-};
-
 const rowClass = (): void => {
-  const width = window.innerWidth-70;
-  const divNum = Math.floor(width/214);
+  const width = window.innerWidth;
+  const divNum = Math.floor(width/212);
   const rowNum = Math.floor(sortedViewingList.value.length/divNum);
   var list = [];
   for(var i = 0; i < rowNum; i++){
     for(var j = 0; j < divNum; j++){
-      list.push('row'+i);
+      if(j+1 == divNum)list.push('row'+i + " " + "row-right");
+      else if(j == 0) list.push('row'+i + " " + "row-left");
+      else list.push('row'+i);
     }
   }
   rowClassNm.value = list;
@@ -98,27 +94,23 @@ const doGetPoster = async() => {
   await Promise.all(copy.map(getPoster));
   show_all.value = true;
 };
-doGetPoster();
+show_all.value = true;
+// doGetPoster();
 
-const mouseOver = (classNm: string): void => {
-  var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
-  for(var i = 0, len = classes.length; i <  len; i++){
-    classes[i].style.transform = "translateX(-25%)";
-  }
-};
-const mouseLeave = (classNm: string): void => {
-  var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
-  for(var i = 0, len = classes.length; i <  len; i++){
-    classes[i].style.transform = "translateX(0%)";
-  }
+const afterEnter = (): void => {
+  appearCnt++;
+  if(appearCnt > 10)isActive.value = false;
+  if(appearCnt == sortedViewingList.value.length)show_loading.value = false;
 };
 
-const click = (movie, classNm): void => {
-  console.log(classNm)
+const clickInfo = (movie: any[], classNm: string, event): void => {
   var el = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
-  // el[0].style.width = '100vw'
+  const coordinate = {x: event.offsetX, y: event.offsetY};
+  el[0].style.transformOrigin = coordinate.y + 'px' + ' ' + coordinate.x + 'px';
+  console.log(coordinate.y + 'px' + ' ' + coordinate.x + 'px');
+  console.log(event)
+  data4Modal.value = movie;
   show_modal.value = true;
-  console.log(movie);
 };
 
 const addInfo = (movie: { show_info: boolean; }): void => {
@@ -128,12 +120,15 @@ const addInfo = (movie: { show_info: boolean; }): void => {
 const delInfo = (movie: { show_info: boolean; }): void => {
   movie.show_info = false;
 };
-
+const btnCloseModalTap = (): void => {
+  show_modal.value = false;
+}
+/*===============================================================*/
 onMounted((): void => {
   console.log('Result Vue >>>>>> On Mounted.');
   window.addEventListener('resize', rowClass);
 });
-
+/*===============================================================*/
 </script>
 
 <style scoped>
@@ -143,19 +138,14 @@ onMounted((): void => {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  /* align-items: center; */
-  padding-left: 35px;
-  padding-right: 35px;
-  padding-top: 20px;
-  padding-bottom: 25px;
+  padding: 20px 0 25px 0;
+  margin-bottom: 50px;
 }
 
 .card {
   background-color: white;
-  /* min-height: 317px; */
   width: 200px;
-  border: 1px solid black;
-  border-radius: 0.7rem;
+  /* border-radius: 0.7rem; */
   overflow-wrap: break-word;
   font-size: clamp(11px, 1vw, 25px);
   padding: 5px;
@@ -165,29 +155,36 @@ onMounted((): void => {
   transition: transform 500ms;
   margin: 5px 0 5px 0;
   padding-right: 7px !important;
+  z-index: 10;
 }
 
-/* .cards:focus-within .card, */
-/* .cards:hover .row0 {
-  transform: translateX(-25%);
-} */
-
-/* .card:focus ~ .card, */
-/* .row0:hover ~ .row0 {
-  transform: translateX(25%) !important ;
-} */
-
-/* .cards .card:focus, */
-#field .card:hover{
-  transform: scale(1.3) !important;
+.movie-info {
   background-color: rgb(216, 39, 69);
-  z-index: 100;
+  position: absolute;
+  text-align: center;
+  left: 0;
+  right: 0;
 }
+
+#field .card:hover{
+  transform: scale(1.2) !important;
+  background-color: rgb(216, 39, 69);
+  z-index: 20;
+}
+
 .poster {
   width: 100%;
   height: auto;
   border: 1px solid black;
   display: block;
+}
+
+.row-right {
+  transform-origin: center right;
+}
+
+.row-left {
+  transform-origin: center left;
 }
 
 .fade-up {
@@ -208,21 +205,46 @@ onMounted((): void => {
   }
 }
 
-.overlay {
-  /*　要素を重ねた時の順番　*/
-  z-index:1;
+#modal {
+  top: 10vh;
+  display: block;
+  z-index: 30;
+}
 
-  /*　画面全体を覆う設定　*/
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background-color:rgba(0,0,0,0.5);
+#btnCloseModal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
+}
 
-  /*　画面の中央に要素を表示させる設定　*/
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.modal-enter-active {
+  animation: zoom-up .5s;
+}
+@keyframes zoom-up {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.modal-leave-active {
+  animation: close-in .5s;
+}
+
+@keyframes close-in {
+  0% {
+    width: 100%
+  }
+  100% {
+    width: 0%
+  }
+}
+
+.modal-close-icon:hover{
+ transition: 1.0s ;
+ color: red !important;
 }
 </style>

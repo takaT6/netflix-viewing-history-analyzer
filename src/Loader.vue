@@ -33,53 +33,20 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { screenLock } from './modules/utils';
-
+/*===============================================================*/
 const router = useRouter();
 
 var viewingList = ref([]);
 
 const emit = defineEmits(['update:viewingList']);
-
+/*===============================================================*/
 if(sessionStorage.viewingList != undefined) {
   viewingList.value = JSON.parse(sessionStorage.viewingList);
 }
 
-onMounted(() => {
-  const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
-  const fileInput = document.getElementById('file-input') as HTMLInputElement;
-  dropZone.addEventListener('dragover', function(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.style.background = '#e1e7f0';
-  }, false);
-  dropZone.addEventListener('dragleave', function(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.style.background = '#ffffff';
-  }, false);
-  fileInput.addEventListener('change', function () {
-        previewFile(this.files[0]);
-  });
-  dropZone.addEventListener('drop', function(e) {
-    e.stopPropagation();
-    e.preventDefault();
-    this.style.background = '#ffffff'; 
-    var files = e.dataTransfer.files;
-    if (files.length > 1) return alert('アップロードできるファイルは1つだけです。');
-    fileInput.files = files;
-    previewFile(files[0]);
-  }, false);
-  console.log('Loader Vue >>>>>> On mounted.')
-});
-
-onUnmounted(() => {
-  sessionStorage.setItem('viewingList', JSON.stringify(viewingList.value));
-  console.log('Loader Vue >>>>>> On Unmounted.');
-});
-
-const previewFile = (file: File) => {
-  if(file.type.match('text/csv')){viewingList.value.splice(0);}
-  else {alert('csvファイルを選択してください。');}
+const previewFile = (file: File): void => {
+  if(file.type.match('text/csv'))viewingList.value.splice(0);
+  else alert('csvファイルを選択してください。');
   var fr = new FileReader();
   fr.readAsText(file);
   fr.onload = () => {
@@ -96,15 +63,56 @@ const previewFile = (file: File) => {
   }
 };
 
-const btnAnalyzerTap = () =>{
-  // screenLock()
+const btnAnalyzerTap = (): void =>{
   emit('update:viewingList', viewingList.value);
   router.push({hash:'#result'})
 };
+/*===============================================================*/
+onMounted(() => {
+  const dropZone = document.getElementById('drop-zone') as HTMLInputElement;
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  dropZone.addEventListener('dragover', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.style.background = '#e1e7f0';
+  }, false);
+
+  dropZone.addEventListener('dragleave', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.style.background = '#ffffff';
+  }, false);
+
+  fileInput.addEventListener('change', function () {
+        previewFile(this.files[0]);
+  });
+
+  dropZone.addEventListener('drop', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    this.style.background = '#ffffff'; 
+    var files = e.dataTransfer.files;
+    if (files.length > 1) return alert('アップロードできるファイルは1つだけです。');
+    fileInput.files = files;
+    previewFile(files[0]);
+  }, false);
+  console.log('Loader Vue >>>>>> On mounted.');
+});
+/*===============================================================*/
+onUnmounted(() => {
+  sessionStorage.setItem('viewingList', JSON.stringify(viewingList.value));
+  console.log('Loader Vue >>>>>> On Unmounted.');
+});
+/*===============================================================*/
+
 
 </script>
 
-<style>
+<style scoped>
+h1 {
+  padding: 10px 0 10px 0;
+  margin: 0;
+}
 #field {
   background-color: white;
 }
@@ -147,12 +155,6 @@ const btnAnalyzerTap = () =>{
 #preview-tbl tr{
   height: 10px;
 }
-/* .preview-title {
-  max-width: 75%;
-}
-.preview-date {
-  max-width: 25%;
-} */
 
 #file-input {
   border: 6px outset red;
@@ -186,7 +188,6 @@ const btnAnalyzerTap = () =>{
 .btn-analyze {
   width: 30vw;
   overflow: hidden;
-  /* padding: 1.5rem 6rem; */
   color: #fff;
   border-radius: 5;
   background: #000;
@@ -213,5 +214,23 @@ const btnAnalyzerTap = () =>{
 .btn-analyze:hover:before {
   -webkit-transform: translateX(0%);
   transform: translateX(0%);
+}
+
+table tr:nth-child(even) td{
+  background-color:#f0f0f0;
+}
+
+.tableani-item {
+  display: inline-block;
+}
+
+.tableani-enter-active,
+.tableani-leave-active {
+  transition: all 1s ease;
+}
+.tableani-enter-from,
+.tableani-leave-to {
+  opacity: 0;
+  transform: translateY(100px);
 }
 </style>

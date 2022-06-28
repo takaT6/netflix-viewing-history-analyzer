@@ -65,3 +65,8 @@ table tr:nth-child(even) td{
 .dt04{
   animation-delay: 0.4s;
 }
+
+i {
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+}

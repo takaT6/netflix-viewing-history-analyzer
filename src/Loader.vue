@@ -2,6 +2,7 @@
  <div id="field">
    <h1>視聴履歴のアップロード</h1>
     <div id="drop-zone">
+      <i class="fa-solid fa-circle-arrow-down fa-2x fa-beat-fade"></i>
       <p>ファイルをドラッグ＆ドロップもしくは</p>
       <input type="file" id="file-input">
     </div>
@@ -84,18 +85,19 @@ const previewFile = (file: File) => {
   fr.onload = () => {
     let lines = (fr.result as string).replace(/\"/g, '').split('\n');
     lines.shift();
-    const copyRef = viewingList.value
+    const list = [];
     for(let i = 0, len = lines.length; i < len; i++){
       let info = lines[i].split(',');
       let viewingInf = {title:info[0], date: info[1]};
-      if(info[0] != "")copyRef.push(viewingInf);
+      if(info[0] != "")list.push(viewingInf);
+      console.log("hoge")
     }
-
+    viewingList.value = list;
   }
 };
 
 const btnAnalyzerTap = () =>{
-  screenLock()
+  // screenLock()
   emit('update:viewingList', viewingList.value);
   router.push({hash:'#result'})
 };

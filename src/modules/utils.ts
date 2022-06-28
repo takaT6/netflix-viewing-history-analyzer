@@ -6,7 +6,7 @@ export const client = axios.create({
 })
 
 
-export const discoverMovies = () => {
+export const discoverMovies = ():void => {
   client.get(CONST.DISCOVER_MV, {
     params: {
       api_key: CONST.API_KEY, 
@@ -45,7 +45,6 @@ export const searchMovie = (title: string): Promise<any> => {
     return [];
   });
   return res;
-  
 };
 
 export const searchTV = (title: string): Promise<any> => {
@@ -97,8 +96,8 @@ export const sortList = (viewingList: any[]): any[] => {
         }],
         cnt: 1,
         poster: './1.png',
-        release_date: '111',
-        first_air_date: '111',
+        release_date: '',
+        first_air_date: '',
         some_hits: Boolean,
         type: 'movie',
         show_info:false
@@ -122,26 +121,30 @@ export const sortList = (viewingList: any[]): any[] => {
   return sortedVL;
 };
 
-export const getPoster = async (viewingItem: { type: string; title: string; poster: string; }): Promise<any> => {
+export const getPoster = async (viewingItem): Promise<any> => {
   if(viewingItem.type == 'movie'){
     var res = await searchMovie(viewingItem.title);
-    if(res.length == 0 ){
+    if(res.length > 0 ){
+      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+      viewingItem.release_date = res[0].release_date;
+    }else{
       res = await searchTV(viewingItem.title);
       if(res.length > 0 ){
         viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+        viewingItem.first_air_date = res[0].first_air_date;
       }
-    }else{
-      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
     }
   }else if(viewingItem.type == 'tv'){
     var res = await searchTV(viewingItem.title);
-    if(res.length == 0 ){
+    if(res.length > 0 ){
+      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+      viewingItem.first_air_date = res[0].first_air_date;
+    }else{
       res = await searchMovie(viewingItem.title);
       if(res.length > 0 ){
         viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+        viewingItem.release_date = res[0].release_date;
       }
-    }else{
-      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
     }
   }
   console.log('finished getPoster func.');
@@ -176,5 +179,5 @@ export const getPoster = async (viewingItem: { type: string; title: string; post
     screenLock.parentNode.removeChild(screenLock);
   }
   
-  setTimeout(screenUnLock, 3000);
+  setTimeout(screenUnLock, 5000);
 }

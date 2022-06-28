@@ -1,5 +1,11 @@
 <template>
-  <div id="field">
+  <div class="overlay" v-if="show_loading">
+    <i 
+      class="fa-solid fa-circle-notch fa-spin fa-5x" 
+      style="color:white"
+    ></i>
+  </div>
+  <div id="field" v-if="show_all">
     <transition-group 
       name="list" 
       type="animation"
@@ -12,16 +18,31 @@
         :class="['card',{'fade-up': isActive}, rowClassNm[index], 'card'+index]"
         :style="{animationDelay: 0.1*index+'s'}"
         @mouseover="mouseOver(rowClassNm[index]), addInfo(movie)"
-        @mouseleave="mouseLeave(rowClassNm[index], delInfo(movie))"
-        @click="click(movie)"
+        @mouseleave="mouseLeave(rowClassNm[index]), delInfo(movie)"
+        @click="click(movie, 'card'+index)"
       >
         <img class="poster" :src="movie.poster">
         <div>{{movie.title}}</div>
-        <div v-if="movie.show_info && movie.release_date != ''">{{movie.release_date}}</div>
-        <div v-if="movie.show_info && movie.first_air_date != ''">{{movie.first_air_date}}</div>
+        <div v-if="movie.show_info">
+          <div v-if="movie.release_date != ''">公開日：{{movie.release_date}}</div>
+          <div v-if="movie.first_air_date != ''">初回放送日：{{movie.first_air_date}}</div>
+          <!-- <div v-if="movie.show_info">{{movie.info}}</div> -->
+          <div>
+            詳細を見る
+            <i class="fa-solid fa-circle-info fa-flip" 
+              style="--fa-animation-duration: 3s;"
+            ></i>
+          </div>
+        </div>
       </div>
     </transition-group>
   </div>
+  <div class="overlay" v-if="show_modal">
+    <div id="content">
+      <p>これがモーダルウィンドウです。</p>
+      <p><button>close</button></p>
+    </div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -36,66 +57,79 @@ var isActive = ref(true);
 
 var sortedViewingList = ref([]);
 
-var rowClassNm = ref([])
+var rowClassNm = ref([]);
+
+var show_all = ref(false);
+
+var show_loading = ref(true);
+
+var show_modal = ref(false);
 
 sortedViewingList.value = sortList(props.viewingList);
 
 var appearCnt = 0;
-const afterEnter = () => {
+const afterEnter = (): void => {
   appearCnt++;
-  if(appearCnt == sortedViewingList.value.length || appearCnt > 20){
-    setTimeout(() => {
+  if(appearCnt == sortedViewingList.value.length || appearCnt > 10){
       isActive.value = false;
-    }, 1);
+  }
+  if(appearCnt == sortedViewingList.value.length){
+    show_loading.value = false;
   }
 };
 
-const rowClass = () => {
-  const width = window.innerWidth-25-17;
+const rowClass = (): void => {
+  const width = window.innerWidth-70;
   const divNum = Math.floor(width/214);
   const rowNum = Math.floor(sortedViewingList.value.length/divNum);
   var list = [];
   for(var i = 0; i < rowNum; i++){
     for(var j = 0; j < divNum; j++){
-      list.push('row'+i)
+      list.push('row'+i);
     }
   }
   rowClassNm.value = list;
-}
+};
 
 rowClass();
 
-const doGetPoster = () => {
-   Promise.all(sortedViewingList.value.map(getPoster))
-}
-// doGetPoster();
+const doGetPoster = async() => {
+  const copy = sortedViewingList.value;
+  await Promise.all(copy.map(getPoster));
+  show_all.value = true;
+};
+doGetPoster();
 
-const mouseOver = (classNm: string) => {
+const mouseOver = (classNm: string): void => {
   var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
   for(var i = 0, len = classes.length; i <  len; i++){
     classes[i].style.transform = "translateX(-25%)";
   }
-}
-const mouseLeave = (classNm: string) => {
+};
+const mouseLeave = (classNm: string): void => {
   var classes = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
   for(var i = 0, len = classes.length; i <  len; i++){
     classes[i].style.transform = "translateX(0%)";
   }
-}
+};
 
-const click = (movie: any) => {
-  console.log(movie)
-}
+const click = (movie, classNm): void => {
+  console.log(classNm)
+  var el = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
+  // el[0].style.width = '100vw'
+  show_modal.value = true;
+  console.log(movie);
+};
 
-const addInfo = (movie: { show_info: boolean; }) => {
+const addInfo = (movie: { show_info: boolean; }): void => {
   movie.show_info = true;
-}
+};
 
-const delInfo = (movie: { show_info: boolean; }) => {
+const delInfo = (movie: { show_info: boolean; }): void => {
   movie.show_info = false;
-}
+};
 
-onMounted(() => {
+onMounted((): void => {
   console.log('Result Vue >>>>>> On Mounted.');
   window.addEventListener('resize', rowClass);
 });
@@ -110,29 +144,28 @@ onMounted(() => {
   flex-wrap: wrap;
   justify-content: space-around;
   /* align-items: center; */
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 35px;
+  padding-right: 35px;
   padding-top: 20px;
   padding-bottom: 25px;
 }
 
 .card {
   background-color: white;
-  height: auto;
+  /* min-height: 317px; */
   width: 200px;
   border: 1px solid black;
   border-radius: 0.7rem;
   overflow-wrap: break-word;
-  font-size: clamp(10px, 1vw, 25px);
+  font-size: clamp(11px, 1vw, 25px);
   padding: 5px;
   position: relative;
-  display: inline-block;
+  display: block;
   transition-property: transform;
   transition: transform 500ms;
   margin: 5px 0 5px 0;
   padding-right: 7px !important;
 }
-
 
 /* .cards:focus-within .card, */
 /* .cards:hover .row0 {
@@ -159,7 +192,7 @@ onMounted(() => {
 
 .fade-up {
   animation-name:fade-up-anime;
-  animation-duration:0.5s;
+  animation-duration:1.5s;
   animation-fill-mode:forwards;
   opacity: 0;
 }
@@ -167,12 +200,29 @@ onMounted(() => {
 @keyframes fade-up-anime{
   from {
     opacity: 0;
-    transform: translateY(100px);
+    transform: translateY(300px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.overlay {
+  /*　要素を重ねた時の順番　*/
+  z-index:1;
+
+  /*　画面全体を覆う設定　*/
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,0.5);
+
+  /*　画面の中央に要素を表示させる設定　*/
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

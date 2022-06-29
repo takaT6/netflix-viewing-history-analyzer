@@ -1,7 +1,7 @@
 <template>
   <div id="modal-area" class="">
     <div id="modal-content">
-      <img class="poster" :src="movieInfo.poster">
+      <img id="modal-poster" :src="movieInfo.poster">
       <table>
         <tr>
           <td>ストーリー</td>
@@ -25,20 +25,23 @@ const props = defineProps({
 
 onMounted(() => {
   console.log('Modal Vue >>>>>> On Mounted.');
-  console.log(props.movieInfo);
 })
 
 </script>
 
 <style scoped>
 #modal-area {
-  background-color:rgba(7, 7, 7, 0.836);
+  background-color:rgba(7, 7, 7, 0.927);
   color: white;
   top: 10vh;
   height:80vh;
 }
 
 #modal-content {
-  float: left;
+  display: flex;
+}
+
+#modal-poster {
+  width: 30vw;
 }
 </style>

@@ -94,8 +94,7 @@ const doGetPoster = async() => {
   await Promise.all(copy.map(getPoster));
   show_all.value = true;
 };
-show_all.value = true;
-// doGetPoster();
+doGetPoster();
 
 const afterEnter = (): void => {
   appearCnt++;
@@ -106,8 +105,8 @@ const afterEnter = (): void => {
 const clickInfo = (movie: any[], classNm: string, event): void => {
   var el = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
   const coordinate = {x: event.offsetX, y: event.offsetY};
-  el[0].style.transformOrigin = coordinate.y + 'px' + ' ' + coordinate.x + 'px';
-  console.log(coordinate.y + 'px' + ' ' + coordinate.x + 'px');
+  // el[0].style.transformOrigin = coordinate.y + 'px' + ' ' + coordinate.x + 'px';
+  // console.log(coordinate.y + 'px' + ' ' + coordinate.x + 'px');
   console.log(event)
   data4Modal.value = movie;
   show_modal.value = true;

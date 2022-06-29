@@ -96,7 +96,7 @@ export const sortList = (viewingList: any[]): any[] => {
         }],
         cnt: 1,
         poster: './1.png',
-        release_date: '20221010',
+        release_date: '',
         first_air_date: '',
         some_hits: Boolean,
         type: 'movie',

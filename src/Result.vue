@@ -35,7 +35,7 @@
   <transition name="modal">
     <div id="modal" class="overlay" v-if="show_modal">
       <i 
-        class="fa-solid fa-circle-chevron-down fa-2x modal-close-icon" 
+        class="fa-solid fa-circle-chevron-down fa-3x modal-close-icon" 
         style="color:white;" 
         id="btnCloseModal" 
         @click="btnCloseModalTap">
@@ -89,7 +89,7 @@ const rowClass = (): void => {
 
 rowClass();
 
-const doGetPoster = async() => {
+const doGetPoster = async(): Promise<void> => {
   const copy = sortedViewingList.value;
   await Promise.all(copy.map(getPoster));
   show_all.value = true;
@@ -166,7 +166,7 @@ onMounted((): void => {
 }
 
 #field .card:hover{
-  transform: scale(1.2) !important;
+  transform: scale(1.4) !important;
   background-color: rgb(216, 39, 69);
   z-index: 20;
 }
@@ -245,5 +245,11 @@ onMounted((): void => {
 .modal-close-icon:hover{
  transition: 1.0s ;
  color: red !important;
+}
+
+#btnCloseModal {
+  background-color: black;
+  border-radius: 50%;
+
 }
 </style>

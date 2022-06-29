@@ -1,50 +1,60 @@
 <template>
- <div id="field">
-   <h1>視聴履歴のアップロード</h1>
-    <div id="drop-zone">
-      <i class="fa-solid fa-circle-arrow-down fa-2x fa-beat-fade"></i>
-      <p>ファイルをドラッグ＆ドロップもしくは</p>
-      <input type="file" id="file-input">
-    </div>
-    <br>
-    <div class="btn btn-analyze" @click="btnAnalyzerTap">
-      <span>解析</span>
-    </div>
-    <h2>アップロードした視聴履歴のプレビュー</h2>
-    <div id="preview">
-      <table id="preview-tbl">
-          <tr>
-            <th class="preview-title">タイトル</th>
-            <th class="preview-date">視聴日時</th>
-          </tr>
-          <transition-group name="tableani">
-            <tr v-for="(movie, index) in viewingList" :key="index">
-              <td class="preview-title">{{movie.title}}</td>
-              <td class="preview-date">{{movie.date}}</td>
+  <div id="field">
+    <h1>視聴履歴のアップロード</h1>
+      <div id="drop-zone">
+        <i class="fa-solid fa-circle-arrow-down fa-2x fa-beat-fade"></i>
+        <p>ファイルをドラッグ＆ドロップもしくは</p>
+        <input type="file" id="file-input">
+      </div>
+      <br>
+      <div class="btn btn-analyze" @click="btnAnalyzerTap">
+        <span>解析</span>
+      </div>
+      <h2>アップロードした視聴履歴のプレビュー</h2>
+      <div id="preview">
+        <table id="preview-tbl">
+            <tr>
+              <th class="preview-title">タイトル</th>
+              <th class="preview-date">視聴日時</th>
             </tr>
-          </transition-group>
-      </table>
-    </div>
-    <div id="spacer"></div>
- </div>
+            <transition-group name="tableani" @after-enter="afterEnter" appear>
+              <tr v-for="(movie, index) in viewingList" :key="index">
+                <td class="preview-title">{{movie.title}}</td>
+                <td class="preview-date">{{movie.date}}</td>
+              </tr>
+            </transition-group>
+        </table>
+      </div>
+      <div id="spacer"></div>
+  </div>
+  <Loading v-if="show_loading"></Loading>
 </template>
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { screenLock } from './modules/utils';
+import Loading from './Loading.vue';
 /*===============================================================*/
 const router = useRouter();
+
+var show_loading = ref(false);
 
 var viewingList = ref([]);
 
 const emit = defineEmits(['update:viewingList']);
+
+var afterenterCnt = 0;
+
+const props = defineProps({viewingList: Array});
 /*===============================================================*/
 if(sessionStorage.viewingList != undefined) {
+  show_loading.value = true;
   viewingList.value = JSON.parse(sessionStorage.viewingList);
 }
 
 const previewFile = (file: File): void => {
+  afterenterCnt = 0;
+  show_loading.value = true;
   if(file.type.match('text/csv'))viewingList.value.splice(0);
   else alert('csvファイルを選択してください。');
   var fr = new FileReader();
@@ -67,6 +77,14 @@ const btnAnalyzerTap = (): void =>{
   emit('update:viewingList', viewingList.value);
   router.push({hash:'#result'})
 };
+
+const afterEnter = (): void => {
+  afterenterCnt++;
+  if(viewingList.value.length == afterenterCnt){
+    show_loading.value = false;
+    console.log(viewingList.value.length == afterenterCnt);
+  }
+}
 /*===============================================================*/
 onMounted(() => {
   const dropZone = document.getElementById('drop-zone') as HTMLInputElement;

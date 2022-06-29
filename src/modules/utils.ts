@@ -3,6 +3,9 @@ import axios from 'axios'
 
 export const client = axios.create({
   baseURL: CONST.API_URL,
+  // headers: {
+  //   'Access-Control-Allow-Origin': '*'
+  // }
 })
 
 
@@ -96,6 +99,7 @@ export const sortList = (viewingList: any[]): any[] => {
         }],
         cnt: 1,
         poster: './1.png',
+        backdrop: './1.png',
         release_date: '',
         first_air_date: '',
         some_hits: Boolean,
@@ -125,24 +129,28 @@ export const getPoster = async (viewingItem): Promise<any> => {
   if(viewingItem.type == 'movie'){
     var res = await searchMovie(viewingItem.title);
     if(res.length > 0 ){
-      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+      viewingItem.poster = CONST.PICTURE_URL + res[0].poster_path;
+      viewingItem.backdrop = CONST.PICTURE_URL + res[0].backdrop_path;
       viewingItem.release_date = res[0].release_date;
     }else{
       res = await searchTV(viewingItem.title);
       if(res.length > 0 ){
-        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+        viewingItem.poster = CONST.PICTURE_URL + res[0].poster_path;
+        viewingItem.backdrop = CONST.PICTURE_URL + res[0].backdrop_path;
         viewingItem.first_air_date = res[0].first_air_date;
       }
     }
   }else if(viewingItem.type == 'tv'){
     var res = await searchTV(viewingItem.title);
     if(res.length > 0 ){
-      viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+      viewingItem.poster = CONST.PICTURE_URL + res[0].poster_path;
+      viewingItem.backdrop = CONST.PICTURE_URL + res[0].backdrop_path;
       viewingItem.first_air_date = res[0].first_air_date;
     }else{
       res = await searchMovie(viewingItem.title);
       if(res.length > 0 ){
-        viewingItem.poster = CONST.POSTER_URL + res[0].poster_path;
+        viewingItem.poster = CONST.PICTURE_URL + res[0].poster_path;
+        viewingItem.backdrop = CONST.PICTURE_URL + res[0].backdrop_path;
         viewingItem.release_date = res[0].release_date;
       }
     }

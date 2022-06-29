@@ -8,5 +8,5 @@ export const CONST = {
   SEARCH_MV: 'search/movie',
   SEARCH_TV: 'search/tv',
 
-  POSTER_URL: 'https://image.tmdb.org/t/p/w500'
+  PICTURE_URL: 'https://image.tmdb.org/t/p/w500'
 }

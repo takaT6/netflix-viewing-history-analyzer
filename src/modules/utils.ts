@@ -3,29 +3,7 @@ import axios from 'axios'
 
 export const client = axios.create({
   baseURL: CONST.API_URL,
-  // headers: {
-  //   'Access-Control-Allow-Origin': '*'
-  // }
 })
-
-
-export const discoverMovies = ():void => {
-  client.get(CONST.DISCOVER_MV, {
-    params: {
-      api_key: CONST.API_KEY, 
-      language: CONST.LANG,
-      with_genres: 878,
-      with_cast: 500,
-      sort_by: 'vote_average.des'
-    }
-  })
-  .then(staus => {
-    console.log('ステータスコード:', staus);
-  })
-  .catch(err => {
-    console.log('err:', err);
-  });
-};
 
 export const searchMovie = (title: string): Promise<any> => {
   const res = client.get(CONST.SEARCH_MV, {
@@ -36,7 +14,6 @@ export const searchMovie = (title: string): Promise<any> => {
     }
   })
   .then(response => {
-    // console.log('ステータスコード:', response.data.results[0]);
     if(response != undefined){
       return response.data.results;
     }else{
@@ -59,7 +36,6 @@ export const searchTV = (title: string): Promise<any> => {
     }
   })
   .then(response => {
-    // console.log('ステータスコード:', response.data.results[0].poster_path);
     return response.data.results;
   })
   .catch(err => {
@@ -74,17 +50,16 @@ export const sortList = (viewingList: any[]): any[] => {
   var editedVL = new Array();
   for(var i = 0, len = viewingList.length; i < len; i++){
     var splitTile =viewingList[i].title.split(':');
-    console.log(typeof(viewingList[i].date));
-    if(viewingList[i].date !== undefined){
-      var numDate = viewingList[i].date.replace(/\//g, '');
-    }
+    // if(viewingList[i].date !== undefined){
+    //   var numDate = viewingList[i].date.replace(/\//g, '');
+    // }
     editedVL.push({
       title: splitTile[0], 
-      date: numDate,
+      date: viewingList[i].date,
       subtitle: splitTile.slice(1).join(':')
     });
   }
-  console.log(editedVL)
+  console.log(editedVL);
 
   // タイトルごとにまとめる
   var sortedVL = new Array();
@@ -157,9 +132,6 @@ export const getPoster = async (viewingItem): Promise<any> => {
   }
   console.log('finished getPoster func.');
 }
-
-
-
 
 /**
  * ScreenLook

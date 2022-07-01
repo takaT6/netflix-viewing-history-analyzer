@@ -50,6 +50,7 @@ const props = defineProps({viewingList: Array});
 if(sessionStorage.viewingList != undefined) {
   show_loading.value = true;
   viewingList.value = JSON.parse(sessionStorage.viewingList);
+  if(viewingList.value.length==0)show_loading.value = false;
 }
 
 const previewFile = (file: File): void => {
@@ -75,14 +76,17 @@ const previewFile = (file: File): void => {
 
 const btnAnalyzerTap = (): void =>{
   emit('update:viewingList', viewingList.value);
-  router.push({hash:'#result'})
+  if(viewingList.value.length != 0){
+    router.push({hash:'#result'});
+  }else{
+    alert('ファイルを選択してください。');
+  }
 };
 
 const afterEnter = (): void => {
   afterenterCnt++;
   if(viewingList.value.length == afterenterCnt){
     show_loading.value = false;
-    console.log(viewingList.value.length == afterenterCnt);
   }
 }
 /*===============================================================*/

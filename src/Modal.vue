@@ -36,7 +36,7 @@ onMounted(() => {
 
 <style scoped>
 #modal-area {
-  background-color:rgba(7, 7, 7, 0.927);
+  background-color:rgba(31, 27, 27, 0.992);
   color: white;
   top: 10vh;
   height:80vh;
@@ -49,7 +49,9 @@ onMounted(() => {
 }
 
 #modal-img {
-  width: 50vw;
+  max-width: 50vw;
+  max-height: 80vh;
+  overflow-y: scroll;
 }
 
 #modal-poster {

@@ -34,12 +34,14 @@
   </div>
   <transition name="modal">
     <div id="modal" class="overlay" v-if="show_modal">
-      <i 
-        class="fa-solid fa-circle-chevron-down fa-3x modal-close-icon" 
-        style="color:white;" 
-        id="btnCloseModal" 
-        @click="btnCloseModalTap">
-      </i>
+      <div id="close-modal-btn-area">
+        <i 
+          class="fa-solid fa-circle-xmark fa-3x modal-close-icon" 
+          style="color:white;" 
+          id="btnCloseModal" 
+          @click="btnCloseModalTap">
+        </i>
+      </div>
       <Modal v-model:movieInfo="data4Modal"></Modal>
     </div>
   </transition>
@@ -79,7 +81,7 @@ const rowClass = (): void => {
   var list = [];
   for(var i = 0; i < rowNum; i++){
     for(var j = 0; j < divNum; j++){
-      if(j+1 == divNum)list.push('row'+i + " " + "row-right");
+      if(j+1 == divNum) list.push('row'+i + " " + "row-right");
       else if(j == 0) list.push('row'+i + " " + "row-left");
       else list.push('row'+i);
     }
@@ -107,7 +109,7 @@ const clickInfo = (movie: any[], classNm: string, event): void => {
   const coordinate = {x: event.offsetX, y: event.offsetY};
   // el[0].style.transformOrigin = coordinate.y + 'px' + ' ' + coordinate.x + 'px';
   // console.log(coordinate.y + 'px' + ' ' + coordinate.x + 'px');
-  console.log(event)
+  console.log(event);
   data4Modal.value = movie;
   show_modal.value = true;
 };
@@ -205,16 +207,15 @@ onMounted((): void => {
 }
 
 #modal {
-  top: 10vh;
+  top: 8vh;
   display: block;
   z-index: 30;
 }
 
-#btnCloseModal {
-  position: absolute;
-  top: 0.5rem;
-  right: 1rem;
-  cursor: pointer;
+#close-modal-btn-area {
+  background-color:rgba(31, 27, 27, 0);
+  display: flex;
+  justify-content: flex-end;
 }
 
 .modal-enter-active {
@@ -230,16 +231,9 @@ onMounted((): void => {
 }
 
 .modal-leave-active {
-  animation: close-in .5s;
-}
-
-@keyframes close-in {
-  0% {
-    width: 100%
-  }
-  100% {
-    width: 0%
-  }
+  animation: zoom-up .5s;
+  animation-direction: reverse;
+  
 }
 
 .modal-close-icon:hover{
@@ -248,8 +242,12 @@ onMounted((): void => {
 }
 
 #btnCloseModal {
+  padding:5px 0 1px 0;
+  z-index: 2000;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
   background-color: black;
   border-radius: 50%;
-
 }
 </style>

@@ -1,3 +1,27 @@
+
+@media screen and (max-width: 400px) {
+  h1 {
+    font-size: 20px !important;
+  }
+
+  #header {
+    margin: 5px 0 5px 0 !important;
+  }
+
+  #title-area {
+    font-size: 10px;
+  }
+
+  #hamburger {
+    font-size: 2em;
+  }
+}
+
+html {
+  /* font-size:0px; */
+  -webkit-text-size-adjust: none;
+}
+
 #app-title-en {
   color: white;
   font-family: 'Verdana',sans-serif;
@@ -12,7 +36,6 @@ body {
   color: black;
   text-align: center;
   margin: 0;
-  /* overflow: hidden; */
   position: relative;
 }
 

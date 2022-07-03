@@ -131,6 +131,20 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+@media screen and (max-width: 400px) {
+  .card {
+    --card-width: 100px !important;
+  }
+
+  #field {
+    font-size: 0.5rem !important;
+  }
+
+  #spacer {
+    height: 10px !important;
+  }
+}
 h1 {
   padding: 10px 0 10px 0;
   margin: 0;

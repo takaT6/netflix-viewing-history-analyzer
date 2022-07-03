@@ -75,8 +75,10 @@ var data4Modal = ref([]);
 sortedViewingList.value = sortList(props.viewingList);
 
 const rowClass = (): void => {
+  const card = document.getElementsByClassName('card') as HTMLCollectionOf<HTMLElement>;
+  const cardWidth = card[0].clientWidth;
   const width = window.innerWidth;
-  const divNum = Math.floor(width/212);
+  const divNum = Math.floor(width/cardWidth);
   const rowNum = Math.floor(sortedViewingList.value.length/divNum);
   var list = [];
   for(var i = 0; i < rowNum; i++){
@@ -89,8 +91,6 @@ const rowClass = (): void => {
   rowClassNm.value = list;
 };
 
-rowClass();
-
 const doGetPoster = async(): Promise<void> => {
   const copy = sortedViewingList.value;
   await Promise.all(copy.map(getPoster));
@@ -98,18 +98,17 @@ const doGetPoster = async(): Promise<void> => {
 };
 doGetPoster();
 
+
 const afterEnter = (): void => {
   appearCnt++;
   if(appearCnt > 10)isActive.value = false;
-  if(appearCnt == sortedViewingList.value.length)show_loading.value = false;
+  if(appearCnt == sortedViewingList.value.length){
+    show_loading.value = false; 
+    rowClass();
+  }
 };
 
 const clickInfo = (movie: any[], classNm: string, event): void => {
-  var el = document.getElementsByClassName(classNm) as  HTMLCollectionOf<HTMLElement>;
-  const coordinate = {x: event.offsetX, y: event.offsetY};
-  // el[0].style.transformOrigin = coordinate.y + 'px' + ' ' + coordinate.x + 'px';
-  // console.log(coordinate.y + 'px' + ' ' + coordinate.x + 'px');
-  console.log(event);
   data4Modal.value = movie;
   show_modal.value = true;
 };
@@ -132,7 +131,23 @@ onMounted((): void => {
 /*===============================================================*/
 </script>
 
+<style>
+:root{
+  --card-width: 200px;
+}
+</style>
+
 <style scoped>
+@media screen and (max-width: 400px) {
+  .card {
+    --card-width: 100px !important;
+  }
+
+  .card {
+    font-size: 0.5em !important;
+  }
+}
+
 #field {
   background-color: black;
   display: flex;
@@ -145,8 +160,7 @@ onMounted((): void => {
 
 .card {
   background-color: white;
-  width: 200px;
-  /* border-radius: 0.7rem; */
+  width: var(--card-width);
   overflow-wrap: break-word;
   font-size: clamp(11px, 1vw, 25px);
   padding: 5px;

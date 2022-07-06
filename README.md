@@ -1,6 +1,10 @@
 # netflix-viewing-history-analyzer
 Netflix Viewing History Analyzer Service.
- 
+
+vue-loderでルートを切り替え、より動的なComponentの切り替えをしている。
+
+映画情報取得API => TMDB(THE MOVIE DATA BASE) https://www.themoviedb.org/documentation/api
+
 # DEMO
 domo => https://heretics-of-nagasaki.com/#upload
 <kbd><img width="747" alt="スクリーンショット 2022-06-08 2 14 55" src=""></kbd>
@@ -12,6 +16,7 @@ domo => https://heretics-of-nagasaki.com/#upload
 * webpack-dev-server 4.9.1
 * typescript 4.7.2
 * ts-loader 9.3.0
+* vue-router 4.0.16
 * .
 * .
 Please see "package.json".

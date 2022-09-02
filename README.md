@@ -1,5 +1,6 @@
 # netflix-viewing-history-analyzer
 Netflix Viewing History Analyzer Service.
+Vue.jsに触れてみる第二弾です。クオリティは求めないでください。
 
 vue-loderでルートを切り替え、より動的なComponentの切り替えをしている。
 

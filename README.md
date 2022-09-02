@@ -6,7 +6,7 @@ vue-loderでルートを切り替え、より動的なComponentの切り替え�
 映画情報取得API => TMDB(THE MOVIE DATA BASE) https://www.themoviedb.org/documentation/api
 
 # DEMO
-domo => https://heretics-of-nagasaki.com/#upload
+domo => 
 <kbd><img width="747" alt="スクリーンショット 2022-06-08 2 14 55" src=""></kbd>
  
 # Requirement

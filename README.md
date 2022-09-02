@@ -2,12 +2,12 @@
 Netflix Viewing History Analyzer Service.
 Vue.jsに触れてみる第二弾です。クオリティは求めないでください。
 
-vue-loderでルートを切り替え、より動的なComponentの切り替えをしている。
+vue-routerでルートを制御し、より動的なComponentの切り替えを実装
 
 映画情報取得API => TMDB(THE MOVIE DATA BASE) https://www.themoviedb.org/documentation/api
 
 # DEMO
-domo => 
+domo => https://heretics-of-nagasaki.com/netflix-analyzer/#upload
 <kbd><img width="747" alt="スクリーンショット 2022-06-08 2 14 55" src=""></kbd>
  
 # Requirement

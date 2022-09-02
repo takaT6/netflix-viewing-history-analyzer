@@ -1,5 +1,7 @@
 # netflix-viewing-history-analyzer
 Netflix Viewing History Analyzer Service.
+
+
 Vue.jsに触れてみる第二弾です。クオリティは求めないでください。
 
 vue-routerでルートを制御し、より動的なComponentの切り替えを実装

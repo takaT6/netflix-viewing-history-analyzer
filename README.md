@@ -10,7 +10,6 @@ vue-routerでルートを制御し、より動的なComponentの切り替えを�
 
 # DEMO
 domo => https://heretics-of-nagasaki.com/netflix-analyzer/#upload
-<kbd><img width="747" alt="スクリーンショット 2022-06-08 2 14 55" src=""></kbd>
  
 # Requirement
  

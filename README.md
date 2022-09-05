@@ -2,11 +2,15 @@
 Netflix Viewing History Analyzer Service.
 
 
-Vue.jsに触れてみる第二弾です。クオリティは求めないでください。
+Vue.jsに触れてみる第二弾です。
 
-vue-routerでルートを制御し、より動的なComponentの切り替えを実装
+ネットフリックス公式サイトからダウンロードできる視聴履歴を読み込ませると、試聴したドラマ/映画/アニメをまとめて、タイトルで一覧化します。シリーズ系はクリックで試聴したエピソードと日付を確認できます。
+
+映画情報に関しては下記のAPIを使用しています。
 
 映画情報取得API => TMDB(THE MOVIE DATA BASE) https://www.themoviedb.org/documentation/api
+
+vue-routerでルートを制御し、より動的なComponentの切り替えを実装してます。
 
 # DEMO
 domo => https://heretics-of-nagasaki.com/netflix-analyzer/#upload

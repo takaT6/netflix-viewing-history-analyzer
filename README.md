@@ -15,6 +15,7 @@ vue-routerでルートを制御し、より動的なComponentの切り替えを�
 # DEMO
 domo => https://heretics-of-nagasaki.com/netflix-analyzer/#upload
 
+*視聴履歴はWeb版Netflix公式サイトからダウンロードしてください
 <img width="730" alt="スクリーンショット 2022-07-13 16 53 37" src="https://user-images.githubusercontent.com/77357587/188393627-4df7f466-ac4c-4640-9967-f28adf01178b.png">
 
  
